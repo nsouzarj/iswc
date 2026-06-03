@@ -5,7 +5,6 @@ com\iswc\security\JwtUtil.class
 com\iswc\controller\MusicalWorkController.class
 com\iswc\repository\CwrTransactionLogRepository.class
 com\iswc\controller\AuthController.class
-com\iswc\controller\MusicalWorkController$SplitRequest.class
 com\iswc\controller\RightsholderController.class
 com\iswc\model\MusicalWork.class
 com\iswc\repository\WorkRightsholderRepository.class
@@ -14,8 +13,11 @@ com\iswc\repository\RecordingRepository.class
 com\iswc\model\CwrRegistration.class
 com\iswc\repository\CwrRegistrationRepository.class
 com\iswc\security\SecurityConfig.class
+com\iswc\service\MusicalWorkService.class
 com\iswc\controller\AuthController$LoginRequest.class
 com\iswc\IswcApplication.class
+com\iswc\dto\SplitRequest.class
+com\iswc\service\RightsholderService.class
 com\iswc\model\WorkRightsholder.class
 com\iswc\repository\MusicalWorkRepository.class
 com\iswc\repository\RightsholderRepository.class

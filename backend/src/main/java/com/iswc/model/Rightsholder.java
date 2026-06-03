@@ -5,11 +5,19 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "rightsholders")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Rightsholder {
 
     @Id
@@ -40,71 +48,11 @@ public class Rightsholder {
     @Column(name = "updated_at", nullable = false, insertable = false)
     private OffsetDateTime updatedAt;
 
-    // Constructors
-    public Rightsholder() {
-    }
-
+    // Custom constructor excluding system fields
     public Rightsholder(String ipiNameNumber, String isni, String fullName, String email) {
         this.ipiNameNumber = ipiNameNumber;
         this.isni = isni;
         this.fullName = fullName;
         this.email = email;
-    }
-
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getIpiNameNumber() {
-        return ipiNameNumber;
-    }
-
-    public void setIpiNameNumber(String ipiNameNumber) {
-        this.ipiNameNumber = ipiNameNumber;
-    }
-
-    public String getIsni() {
-        return isni;
-    }
-
-    public void setIsni(String isni) {
-        this.isni = isni;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

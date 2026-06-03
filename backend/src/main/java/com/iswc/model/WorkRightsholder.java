@@ -7,6 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -15,6 +19,10 @@ import java.util.UUID;
 @Table(name = "work_rightsholders", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"work_id", "rightsholder_id", "role"})
 })
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class WorkRightsholder {
 
     @Id
@@ -61,10 +69,7 @@ public class WorkRightsholder {
     @Column(name = "updated_at", nullable = false, insertable = false)
     private OffsetDateTime updatedAt;
 
-    // Constructors
-    public WorkRightsholder() {
-    }
-
+    // Custom constructor excluding system fields
     public WorkRightsholder(MusicalWork work, Rightsholder rightsholder, String role, BigDecimal mechanicalSplit, BigDecimal performanceSplit, BigDecimal publisherSplit) {
         this.work = work;
         this.rightsholder = rightsholder;
@@ -72,78 +77,5 @@ public class WorkRightsholder {
         this.mechanicalSplit = mechanicalSplit;
         this.performanceSplit = performanceSplit;
         this.publisherSplit = publisherSplit;
-    }
-
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public MusicalWork getWork() {
-        return work;
-    }
-
-    public void setWork(MusicalWork work) {
-        this.work = work;
-    }
-
-    public Rightsholder getRightsholder() {
-        return rightsholder;
-    }
-
-    public void setRightsholder(Rightsholder rightsholder) {
-        this.rightsholder = rightsholder;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public BigDecimal getMechanicalSplit() {
-        return mechanicalSplit;
-    }
-
-    public void setMechanicalSplit(BigDecimal mechanicalSplit) {
-        this.mechanicalSplit = mechanicalSplit;
-    }
-
-    public BigDecimal getPerformanceSplit() {
-        return performanceSplit;
-    }
-
-    public void setPerformanceSplit(BigDecimal performanceSplit) {
-        this.performanceSplit = performanceSplit;
-    }
-
-    public BigDecimal getPublisherSplit() {
-        return publisherSplit;
-    }
-
-    public void setPublisherSplit(BigDecimal publisherSplit) {
-        this.publisherSplit = publisherSplit;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

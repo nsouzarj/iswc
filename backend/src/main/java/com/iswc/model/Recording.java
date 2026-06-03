@@ -6,11 +6,19 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "recordings")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Recording {
 
     @Id
@@ -43,71 +51,11 @@ public class Recording {
     @Column(name = "updated_at", nullable = false, insertable = false)
     private OffsetDateTime updatedAt;
 
-    // Constructors
-    public Recording() {
-    }
-
+    // Custom constructor excluding system fields
     public Recording(String isrc, MusicalWork work, String title, Integer durationSeconds) {
         this.isrc = isrc;
         this.work = work;
         this.title = title;
         this.durationSeconds = durationSeconds;
-    }
-
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getIsrc() {
-        return isrc;
-    }
-
-    public void setIsrc(String isrc) {
-        this.isrc = isrc;
-    }
-
-    public MusicalWork getWork() {
-        return work;
-    }
-
-    public void setWork(MusicalWork work) {
-        this.work = work;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Integer getDurationSeconds() {
-        return durationSeconds;
-    }
-
-    public void setDurationSeconds(Integer durationSeconds) {
-        this.durationSeconds = durationSeconds;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

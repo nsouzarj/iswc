@@ -1,6 +1,7 @@
 D:\Projetos\iswc\backend\src\main\java\com\iswc\controller\AuthController.java
 D:\Projetos\iswc\backend\src\main\java\com\iswc\controller\MusicalWorkController.java
 D:\Projetos\iswc\backend\src\main\java\com\iswc\controller\RightsholderController.java
+D:\Projetos\iswc\backend\src\main\java\com\iswc\dto\SplitRequest.java
 D:\Projetos\iswc\backend\src\main\java\com\iswc\IswcApplication.java
 D:\Projetos\iswc\backend\src\main\java\com\iswc\model\CwrRegistration.java
 D:\Projetos\iswc\backend\src\main\java\com\iswc\model\CwrTransactionLog.java
@@ -17,3 +18,5 @@ D:\Projetos\iswc\backend\src\main\java\com\iswc\repository\WorkRightsholderRepos
 D:\Projetos\iswc\backend\src\main\java\com\iswc\security\JwtAuthenticationFilter.java
 D:\Projetos\iswc\backend\src\main\java\com\iswc\security\JwtUtil.java
 D:\Projetos\iswc\backend\src\main\java\com\iswc\security\SecurityConfig.java
+D:\Projetos\iswc\backend\src\main\java\com\iswc\service\MusicalWorkService.java
+D:\Projetos\iswc\backend\src\main\java\com\iswc\service\RightsholderService.java

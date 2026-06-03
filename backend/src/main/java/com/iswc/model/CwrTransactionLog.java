@@ -4,11 +4,19 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "cwr_transaction_logs")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CwrTransactionLog {
 
     @Id
@@ -40,72 +48,12 @@ public class CwrTransactionLog {
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false)
     private OffsetDateTime createdAt;
 
-    // Constructors
-    public CwrTransactionLog() {
-    }
-
+    // Custom constructor excluding system fields
     public CwrTransactionLog(CwrRegistration registration, MusicalWork work, String transactionType, String statusCode, String rawLog) {
         this.registration = registration;
         this.work = work;
         this.transactionType = transactionType;
         this.statusCode = statusCode;
         this.rawLog = rawLog;
-    }
-
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public CwrRegistration getRegistration() {
-        return registration;
-    }
-
-    public void setRegistration(CwrRegistration registration) {
-        this.registration = registration;
-    }
-
-    public MusicalWork getWork() {
-        return work;
-    }
-
-    public void setWork(MusicalWork work) {
-        this.work = work;
-    }
-
-    public String getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
-    }
-
-    public String getStatusCode() {
-        return statusCode;
-    }
-
-    public void setStatusCode(String statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    public String getRawLog() {
-        return rawLog;
-    }
-
-    public void setRawLog(String rawLog) {
-        this.rawLog = rawLog;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
