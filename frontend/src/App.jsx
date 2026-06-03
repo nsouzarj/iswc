@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardTab from './components/DashboardTab';
 import RightsholdersTab from './components/RightsholdersTab';
 import WorksTab from './components/WorksTab';
@@ -48,27 +48,6 @@ function App() {
   const [successMsg, setSuccessMsg] = useState('');
   const [globalError, setGlobalError] = useState('');
 
-  // Load Initial Public Data
-  useEffect(() => {
-    fetchRightsholders();
-    fetchWorks();
-  }, []);
-
-  // Clear messages after timeout
-  useEffect(() => {
-    if (successMsg) {
-      const t = setTimeout(() => setSuccessMsg(''), 5000);
-      return () => clearTimeout(t);
-    }
-  }, [successMsg]);
-
-  useEffect(() => {
-    if (globalError) {
-      const t = setTimeout(() => setGlobalError(''), 7000);
-      return () => clearTimeout(t);
-    }
-  }, [globalError]);
-
   // API Call Helpers
   const getHeaders = (contentType = 'application/json') => {
     const headers = {};
@@ -90,7 +69,7 @@ function App() {
       } else {
         setGlobalError('Failed to fetch rightsholders from backend.');
       }
-    } catch (e) {
+    } catch {
       setGlobalError('Backend connection error while fetching rightsholders.');
     }
   };
@@ -104,10 +83,32 @@ function App() {
       } else {
         setGlobalError('Failed to fetch works from backend.');
       }
-    } catch (e) {
+    } catch {
       setGlobalError('Backend connection error while fetching works.');
     }
   };
+
+  // Load Initial Public Data
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchRightsholders();
+    fetchWorks();
+  }, []);
+
+  // Clear messages after timeout
+  useEffect(() => {
+    if (successMsg) {
+      const t = setTimeout(() => setSuccessMsg(''), 5000);
+      return () => clearTimeout(t);
+    }
+  }, [successMsg]);
+
+  useEffect(() => {
+    if (globalError) {
+      const t = setTimeout(() => setGlobalError(''), 7000);
+      return () => clearTimeout(t);
+    }
+  }, [globalError]);
 
   const fetchWorkDetailsAndSplits = async (workId) => {
     try {
@@ -130,7 +131,7 @@ function App() {
           setSplits([{ rightsholderId: '', role: 'CA', mechanicalSplit: 0, performanceSplit: 0, publisherSplit: 0 }]);
         }
       }
-    } catch (e) {
+    } catch {
       setGlobalError('Failed to load split sheet details.');
     }
   };
@@ -158,7 +159,7 @@ function App() {
         const err = await res.json();
         setLoginError(err.error || 'Invalid credentials');
       }
-    } catch (e) {
+    } catch {
       setLoginError('Authentication service unreachable.');
     }
   };
@@ -211,7 +212,7 @@ function App() {
         const err = await res.json();
         setRightsholderError(err.error || 'Failed to create rightsholder.');
       }
-    } catch (e) {
+    } catch {
       setRightsholderError('Communication failure with backend.');
     }
   };
@@ -251,7 +252,7 @@ function App() {
         const err = await res.json();
         setWorkError(err.error || 'Failed to create musical work.');
       }
-    } catch (e) {
+    } catch {
       setWorkError('Communication failure with backend.');
     }
   };
@@ -310,7 +311,7 @@ function App() {
         const err = await res.json();
         setGlobalError(err.error || 'Failed to save split sheet splits.');
       }
-    } catch (e) {
+    } catch {
       setGlobalError('Connection error while saving splits.');
     }
   };
