@@ -16,8 +16,14 @@ function WorksTab({
   workStatus,
   setWorkStatus,
   getStatusBadge,
-  handleOpenSplitSheet
+  handleOpenSplitSheet,
+  validateIswcChecksum
 }) {
+  const cleanIswc = iswc.replace(/[-.\s]/g, '').toUpperCase();
+  const iswcInputEmpty = !iswc;
+  const iswcFormatValid = /^T\d{10}$/.test(cleanIswc);
+  const iswcChecksumValid = iswcInputEmpty || (iswcFormatValid && validateIswcChecksum(cleanIswc));
+
   return (
     <div style={{ display: 'grid', gridTemplateColumns: token ? '1fr 350px' : '1fr', gap: '2rem' }}>
       <div className="card-glass">
@@ -100,7 +106,12 @@ function WorksTab({
             </div>
             <div className="form-group">
               <label className="form-label">ISWC (T9000000000)</label>
-              <input className="form-input" type="text" placeholder="T0000000000" maxLength={11} value={iswc} onChange={e => setIswc(e.target.value)} />
+              <input className="form-input" type="text" placeholder="T0000000000" maxLength={11} value={iswc} onChange={e => setIswc(e.target.value)} style={{ borderColor: !iswcInputEmpty && !iswcChecksumValid ? 'var(--accent-warning)' : '' }} />
+              {!iswcInputEmpty && !iswcChecksumValid && (
+                <span style={{ color: 'var(--accent-warning)', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>
+                  ⚠️ Invalid ISWC checksum or format.
+                </span>
+              )}
             </div>
             <div className="form-group">
               <label className="form-label">Language Code (ISO 639-1)</label>

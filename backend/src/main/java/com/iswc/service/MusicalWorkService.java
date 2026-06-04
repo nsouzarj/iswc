@@ -7,6 +7,7 @@ import com.iswc.model.WorkRightsholder;
 import com.iswc.repository.MusicalWorkRepository;
 import com.iswc.repository.RightsholderRepository;
 import com.iswc.repository.WorkRightsholderRepository;
+import com.iswc.util.MetadataValidator;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
@@ -58,8 +59,13 @@ public class MusicalWorkService {
     }
 
     public MusicalWork createWork(MusicalWork work) {
-        if (work.getIswc() != null && workRepository.findByIswc(work.getIswc()).isPresent()) {
-            throw new IllegalArgumentException("ISWC already exists");
+        if (work.getIswc() != null) {
+            if (!MetadataValidator.validateIswc(work.getIswc())) {
+                throw new IllegalArgumentException("Invalid ISWC check digit");
+            }
+            if (workRepository.findByIswc(work.getIswc()).isPresent()) {
+                throw new IllegalArgumentException("ISWC already exists");
+            }
         }
         return workRepository.save(work);
     }
@@ -72,6 +78,27 @@ public class MusicalWorkService {
         }
         
         MusicalWork work = workOpt.get();
+
+        // Validate splits request before making modifications
+        Set<UUID> rightsholderIds = new HashSet<>();
+        for (SplitRequest req : splitRequests) {
+            if (req.getRightsholderId() == null) {
+                throw new IllegalArgumentException("Rightsholder ID cannot be null");
+            }
+            if (!rightsholderIds.add(req.getRightsholderId())) {
+                throw new IllegalArgumentException("Duplicate rightsholder in split sheet");
+            }
+
+            BigDecimal mech = req.getMechanicalSplit() != null ? req.getMechanicalSplit() : BigDecimal.ZERO;
+            BigDecimal perf = req.getPerformanceSplit() != null ? req.getPerformanceSplit() : BigDecimal.ZERO;
+            BigDecimal pub = req.getPublisherSplit() != null ? req.getPublisherSplit() : BigDecimal.ZERO;
+
+            if (mech.compareTo(BigDecimal.ZERO) < 0 || mech.compareTo(new BigDecimal("100.00")) > 0 ||
+                perf.compareTo(BigDecimal.ZERO) < 0 || perf.compareTo(new BigDecimal("100.00")) > 0 ||
+                pub.compareTo(BigDecimal.ZERO) < 0 || pub.compareTo(new BigDecimal("100.00")) > 0) {
+                throw new IllegalArgumentException("Split percentages must be between 0.00% and 100.00%");
+            }
+        }
 
         // 1. Delete existing splits for this work
         List<WorkRightsholder> existingSplits = workRightsholderRepository.findByWorkId(workId);

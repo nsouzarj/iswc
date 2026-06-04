@@ -15,6 +15,9 @@ function SplitSheetTab({
   totalPerformance,
   setActiveTab
 }) {
+  const rightsholderIds = splits.map(s => s.rightsholderId).filter(id => id !== '');
+  const hasDuplicateRightsholder = new Set(rightsholderIds).size !== rightsholderIds.length;
+
   return (
     <div className="card-glass">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -87,7 +90,7 @@ function SplitSheetTab({
           {token && (
             <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem' }}>
               <button className="btn btn-secondary" onClick={handleAddSplitRow}>+ Add Stakeholder</button>
-              <button className="btn btn-primary" onClick={handleSaveSplits}>💾 Save Split Sheet</button>
+              <button className="btn btn-primary" onClick={handleSaveSplits} disabled={hasDuplicateRightsholder}>💾 Save Split Sheet</button>
             </div>
           )}
         </div>
@@ -117,6 +120,15 @@ function SplitSheetTab({
                 <div style={{ width: `${Math.min(totalPerformance, 100)}%`, height: '100%', background: totalPerformance === 100 ? '#22c55e' : 'var(--accent-warning)' }}></div>
               </div>
             </div>
+
+            {hasDuplicateRightsholder && (
+              <div style={{ borderTop: '1px solid var(--border-glass)', paddingTop: '1rem', marginTop: '0.5rem' }}>
+                <h5 style={{ marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>DUPLICATE WARNING</h5>
+                <div style={{ fontSize: '0.85rem', color: 'var(--accent-warning)' }}>
+                  🚫 **Duplicate Rightsholders**: You have assigned the same author/publisher multiple times in the matrix. Save is disabled until resolved.
+                </div>
+              </div>
+            )}
 
             <div style={{ borderTop: '1px solid var(--border-glass)', paddingTop: '1rem', marginTop: '0.5rem' }}>
               <h5 style={{ marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>DECISION CONSEQUENCES</h5>

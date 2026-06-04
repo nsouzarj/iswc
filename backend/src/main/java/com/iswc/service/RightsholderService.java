@@ -2,6 +2,7 @@ package com.iswc.service;
 
 import com.iswc.model.Rightsholder;
 import com.iswc.repository.RightsholderRepository;
+import com.iswc.util.MetadataValidator;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +30,13 @@ public class RightsholderService {
             rightsholderRepository.findByIpiNameNumber(rightsholder.getIpiNameNumber()).isPresent()) {
             throw new IllegalArgumentException("IPI Name Number already exists");
         }
-        if (rightsholder.getIsni() != null && 
-            rightsholderRepository.findByIsni(rightsholder.getIsni()).isPresent()) {
-            throw new IllegalArgumentException("ISNI already exists");
+        if (rightsholder.getIsni() != null) {
+            if (!MetadataValidator.validateIsni(rightsholder.getIsni())) {
+                throw new IllegalArgumentException("Invalid ISNI check digit");
+            }
+            if (rightsholderRepository.findByIsni(rightsholder.getIsni()).isPresent()) {
+                throw new IllegalArgumentException("ISNI already exists");
+            }
         }
         if (rightsholder.getEmail() != null && 
             rightsholderRepository.findByEmail(rightsholder.getEmail()).isPresent()) {

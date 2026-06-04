@@ -13,8 +13,14 @@ function RightsholdersTab({
   setIpiNameNumber,
   isni,
   setIsni,
-  setSelectedAuthorPortfolio
+  setSelectedAuthorPortfolio,
+  validateIsniChecksum
 }) {
+  const cleanIsni = isni.replace(/[-\s]/g, '').toUpperCase();
+  const isniInputEmpty = !isni;
+  const isniFormatValid = /^[0-9]{15}[0-9X]$/.test(cleanIsni);
+  const isniChecksumValid = isniInputEmpty || (isniFormatValid && validateIsniChecksum(cleanIsni));
+
   return (
     <div style={{ display: 'grid', gridTemplateColumns: token ? '1fr 350px' : '1fr', gap: '2rem' }}>
       <div className="card-glass">
@@ -56,7 +62,7 @@ function RightsholdersTab({
           </div>
         )}
       </div>
-
+ 
       {token && (
         <div className="card-glass" style={{ height: 'fit-content' }}>
           <h3>Add Rightsholder</h3>
@@ -78,7 +84,12 @@ function RightsholdersTab({
             </div>
             <div className="form-group">
               <label className="form-label">ISNI (16 chars)</label>
-              <input className="form-input" type="text" placeholder="0000000123456789" maxLength={16} value={isni} onChange={e => setIsni(e.target.value)} />
+              <input className="form-input" type="text" placeholder="0000000123456789" maxLength={16} value={isni} onChange={e => setIsni(e.target.value)} style={{ borderColor: !isniInputEmpty && !isniChecksumValid ? 'var(--accent-warning)' : '' }} />
+              {!isniInputEmpty && !isniChecksumValid && (
+                <span style={{ color: 'var(--accent-warning)', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>
+                  ⚠️ Invalid ISNI checksum or format.
+                </span>
+              )}
             </div>
             <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '0.5rem' }}>Register Party</button>
           </form>

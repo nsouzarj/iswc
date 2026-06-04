@@ -7,6 +7,52 @@ import PortfolioDrawer from './components/PortfolioDrawer';
 
 const API_BASE = 'http://' + window.location.hostname + ':8080/api';
 
+function validateIswcChecksum(iswc) {
+  if (!iswc) return false;
+  const clean = iswc.replace(/[-.\s]/g, '').toUpperCase();
+  if (clean.length !== 11 || clean[0] !== 'T') return false;
+  
+  const d = [];
+  for (let i = 1; i < 11; i++) {
+    const val = parseInt(clean[i], 10);
+    if (isNaN(val)) return false;
+    d.push(val);
+  }
+  
+  const expectedCheckDigit = d[9];
+  let sum = 1;
+  for (let i = 0; i < 9; i++) {
+    sum += (i + 1) * d[i];
+  }
+  
+  const calculatedCheckDigit = (10 - (sum % 10)) % 10;
+  return calculatedCheckDigit === expectedCheckDigit;
+}
+
+function validateIsniChecksum(isni) {
+  if (!isni) return false;
+  const clean = isni.replace(/[-\s]/g, '').toUpperCase();
+  if (clean.length !== 16) return false;
+  
+  for (let i = 0; i < 15; i++) {
+    if (isNaN(parseInt(clean[i], 10))) return false;
+  }
+  
+  const lastChar = clean[15];
+  if (lastChar !== 'X' && isNaN(parseInt(lastChar, 10))) return false;
+  
+  let p = 0;
+  for (let i = 0; i < 15; i++) {
+    const a = parseInt(clean[i], 10);
+    const s = p + a;
+    p = (s * 2) % 11;
+  }
+  
+  const c = (12 - p) % 11;
+  const expectedCheckChar = (c === 10) ? 'X' : String(c);
+  return expectedCheckChar === lastChar;
+}
+
 function App() {
   // Authentication & Session States
   const [token, setToken] = useState(localStorage.getItem('iswc_token') || '');
@@ -182,16 +228,23 @@ function App() {
       setRightsholderError('IPI must be exactly 11 digits');
       return;
     }
-    if (isni && !/^[0-9]{15}[0-9X]$/.test(isni)) {
-      setRightsholderError('ISNI must be 16 characters (15 digits followed by digit/X)');
-      return;
+    if (isni) {
+      const cleanIsni = isni.replace(/[-\s]/g, '').toUpperCase();
+      if (!/^[0-9]{15}[0-9X]$/.test(cleanIsni)) {
+        setRightsholderError('ISNI must be 16 characters (15 digits followed by digit/X)');
+        return;
+      }
+      if (!validateIsniChecksum(cleanIsni)) {
+        setRightsholderError('ISNI check digit (checksum) is invalid');
+        return;
+      }
     }
 
     const payload = {
       fullName,
       email: email || null,
       ipiNameNumber: ipiNameNumber || null,
-      isni: isni || null
+      isni: isni ? isni.replace(/[-\s]/g, '').toUpperCase() : null
     };
 
     try {
@@ -222,14 +275,21 @@ function App() {
     e.preventDefault();
     setWorkError('');
 
-    if (iswc && !/^T\d{9}\d$/.test(iswc)) {
-      setWorkError('ISWC must match standard format (T + 10 digits)');
-      return;
+    if (iswc) {
+      const cleanIswc = iswc.replace(/[-.\s]/g, '').toUpperCase();
+      if (!/^T\d{10}$/.test(cleanIswc)) {
+        setWorkError('ISWC must match standard format (T + 10 digits)');
+        return;
+      }
+      if (!validateIswcChecksum(cleanIswc)) {
+        setWorkError('ISWC check digit (checksum) is invalid');
+        return;
+      }
     }
 
     const payload = {
       title: workTitle,
-      iswc: iswc || null,
+      iswc: iswc ? iswc.replace(/[-.\s]/g, '').toUpperCase() : null,
       languageCode: languageCode.toUpperCase(),
       musicalGenre: musicalGenre || null,
       status: workStatus
@@ -293,6 +353,16 @@ function App() {
     if (splits.some(s => !s.rightsholderId)) {
       setGlobalError('Please select a rightsholder for all split sheet entries.');
       return;
+    }
+
+    // Check for duplicate rightsholders
+    const seenRightsholders = new Set();
+    for (const split of splits) {
+      if (seenRightsholders.has(split.rightsholderId)) {
+        setGlobalError('Duplicate rightsholders are not allowed in the split sheet.');
+        return;
+      }
+      seenRightsholders.add(split.rightsholderId);
     }
 
     try {
@@ -408,6 +478,7 @@ function App() {
             isni={isni}
             setIsni={setIsni}
             setSelectedAuthorPortfolio={setSelectedAuthorPortfolio}
+            validateIsniChecksum={validateIsniChecksum}
           />
         )}
 
@@ -430,6 +501,7 @@ function App() {
             setWorkStatus={setWorkStatus}
             getStatusBadge={getStatusBadge}
             handleOpenSplitSheet={handleOpenSplitSheet}
+            validateIswcChecksum={validateIswcChecksum}
           />
         )}
 
