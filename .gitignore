@@ -26,6 +26,7 @@ dist-ssr
 # Java / Maven artifacts
 *.jar
 *.war
+*.class
 *.ear
 target/
 .mvn/
